@@ -1,12 +1,30 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace WebProyecto.Data.Migrations
+namespace WebProyecto.AccesoDatos.Migrations
 {
-    public partial class PrimeraMigracion : Migration
+    public partial class initialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterColumn<string>(
+                name: "Name",
+                table: "AspNetUserTokens",
+                type: "nvarchar(450)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(128)",
+                oldMaxLength: 128);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "LoginProvider",
+                table: "AspNetUserTokens",
+                type: "nvarchar(450)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(128)",
+                oldMaxLength: 128);
+
             migrationBuilder.AddColumn<string>(
                 name: "Apellidos",
                 table: "AspNetUsers",
@@ -49,6 +67,24 @@ namespace WebProyecto.Data.Migrations
                 table: "AspNetUsers",
                 type: "nvarchar(max)",
                 nullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "ProviderKey",
+                table: "AspNetUserLogins",
+                type: "nvarchar(450)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(128)",
+                oldMaxLength: 128);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "LoginProvider",
+                table: "AspNetUserLogins",
+                type: "nvarchar(450)",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(128)",
+                oldMaxLength: 128);
 
             migrationBuilder.CreateTable(
                 name: "Bodegas",
@@ -94,6 +130,20 @@ namespace WebProyecto.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Especies",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Estado = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Especies", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Marcas",
                 columns: table => new
                 {
@@ -105,6 +155,40 @@ namespace WebProyecto.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Marcas", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orden",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UsuarioAplicacionId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    FechaOrden = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaEnvio = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NumeroEnvio = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Carrier = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TotalOrden = table.Column<double>(type: "float", nullable: false),
+                    EstadoOrden = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EstadoPago = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FechaPago = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FechaMaximoPago = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TransaccionId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Ciudad = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Pais = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NombreCliente = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orden", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orden_AspNetUsers_UsuarioAplicacionId",
+                        column: x => x.UsuarioAplicacionId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -147,7 +231,8 @@ namespace WebProyecto.Data.Migrations
                     Precio = table.Column<double>(type: "float", nullable: false),
                     Costo = table.Column<double>(type: "float", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CategoriaFlorId = table.Column<int>(type: "int", nullable: false)
+                    CategoriaFlorId = table.Column<int>(type: "int", nullable: false),
+                    EspecieId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -156,6 +241,12 @@ namespace WebProyecto.Data.Migrations
                         name: "FK_Flores_CategoriasFlor_CategoriaFlorId",
                         column: x => x.CategoriaFlorId,
                         principalTable: "CategoriasFlor",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Flores_Especies_EspecieId",
+                        column: x => x.EspecieId,
+                        principalTable: "Especies",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -228,6 +319,40 @@ namespace WebProyecto.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CarroCompras",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UsuarioAplicacionId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FlorId = table.Column<int>(type: "int", nullable: false),
+                    PerfumeId = table.Column<int>(type: "int", nullable: false),
+                    Cantidad = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CarroCompras", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CarroCompras_AspNetUsers_UsuarioAplicacionId",
+                        column: x => x.UsuarioAplicacionId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CarroCompras_Flores_FlorId",
+                        column: x => x.FlorId,
+                        principalTable: "Flores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CarroCompras_Perfumes_PerfumeId",
+                        column: x => x.PerfumeId,
+                        principalTable: "Perfumes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "InventarioDetalle",
                 columns: table => new
                 {
@@ -262,6 +387,41 @@ namespace WebProyecto.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "OrdenDetalle",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrdenId = table.Column<int>(type: "int", nullable: false),
+                    FlorId = table.Column<int>(type: "int", nullable: false),
+                    PerfumeId = table.Column<int>(type: "int", nullable: false),
+                    Cantidad = table.Column<int>(type: "int", nullable: false),
+                    Precio = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrdenDetalle", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrdenDetalle_Flores_FlorId",
+                        column: x => x.FlorId,
+                        principalTable: "Flores",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrdenDetalle_Orden_OrdenId",
+                        column: x => x.OrdenId,
+                        principalTable: "Orden",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrdenDetalle_Perfumes_PerfumeId",
+                        column: x => x.PerfumeId,
+                        principalTable: "Perfumes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_BodegaProductos_BodegaId",
                 table: "BodegaProductos",
@@ -278,9 +438,29 @@ namespace WebProyecto.Data.Migrations
                 column: "PerfumeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CarroCompras_FlorId",
+                table: "CarroCompras",
+                column: "FlorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CarroCompras_PerfumeId",
+                table: "CarroCompras",
+                column: "PerfumeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CarroCompras_UsuarioAplicacionId",
+                table: "CarroCompras",
+                column: "UsuarioAplicacionId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Flores_CategoriaFlorId",
                 table: "Flores",
                 column: "CategoriaFlorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Flores_EspecieId",
+                table: "Flores",
+                column: "EspecieId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Inventario_BodegaId",
@@ -308,6 +488,26 @@ namespace WebProyecto.Data.Migrations
                 column: "PerfumeId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orden_UsuarioAplicacionId",
+                table: "Orden",
+                column: "UsuarioAplicacionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrdenDetalle_FlorId",
+                table: "OrdenDetalle",
+                column: "FlorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrdenDetalle_OrdenId",
+                table: "OrdenDetalle",
+                column: "OrdenId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrdenDetalle_PerfumeId",
+                table: "OrdenDetalle",
+                column: "PerfumeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Perfumes_CategoriaPerfumeId",
                 table: "Perfumes",
                 column: "CategoriaPerfumeId");
@@ -324,22 +524,34 @@ namespace WebProyecto.Data.Migrations
                 name: "BodegaProductos");
 
             migrationBuilder.DropTable(
+                name: "CarroCompras");
+
+            migrationBuilder.DropTable(
                 name: "InventarioDetalle");
 
             migrationBuilder.DropTable(
-                name: "Flores");
+                name: "OrdenDetalle");
 
             migrationBuilder.DropTable(
                 name: "Inventario");
 
             migrationBuilder.DropTable(
+                name: "Flores");
+
+            migrationBuilder.DropTable(
+                name: "Orden");
+
+            migrationBuilder.DropTable(
                 name: "Perfumes");
+
+            migrationBuilder.DropTable(
+                name: "Bodegas");
 
             migrationBuilder.DropTable(
                 name: "CategoriasFlor");
 
             migrationBuilder.DropTable(
-                name: "Bodegas");
+                name: "Especies");
 
             migrationBuilder.DropTable(
                 name: "CategoriasPerfume");
@@ -374,6 +586,42 @@ namespace WebProyecto.Data.Migrations
             migrationBuilder.DropColumn(
                 name: "Telefono",
                 table: "AspNetUsers");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Name",
+                table: "AspNetUserTokens",
+                type: "nvarchar(128)",
+                maxLength: 128,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(450)");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "LoginProvider",
+                table: "AspNetUserTokens",
+                type: "nvarchar(128)",
+                maxLength: 128,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(450)");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "ProviderKey",
+                table: "AspNetUserLogins",
+                type: "nvarchar(128)",
+                maxLength: 128,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(450)");
+
+            migrationBuilder.AlterColumn<string>(
+                name: "LoginProvider",
+                table: "AspNetUserLogins",
+                type: "nvarchar(128)",
+                maxLength: 128,
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(450)");
         }
     }
 }

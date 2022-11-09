@@ -168,12 +168,10 @@ namespace WebProyecto.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -210,12 +208,10 @@ namespace WebProyecto.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -280,6 +276,37 @@ namespace WebProyecto.Data.Migrations
                     b.ToTable("BodegaProductos");
                 });
 
+            modelBuilder.Entity("WebProyecto.Modelos.CarroCompras", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FlorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PerfumeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsuarioAplicacionId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FlorId");
+
+                    b.HasIndex("PerfumeId");
+
+                    b.HasIndex("UsuarioAplicacionId");
+
+                    b.ToTable("CarroCompras");
+                });
+
             modelBuilder.Entity("WebProyecto.Modelos.CategoriaFlor", b =>
                 {
                     b.Property<int>("id")
@@ -320,6 +347,26 @@ namespace WebProyecto.Data.Migrations
                     b.ToTable("CategoriasPerfume");
                 });
 
+            modelBuilder.Entity("WebProyecto.Modelos.Especie", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("Especies");
+                });
+
             modelBuilder.Entity("WebProyecto.Modelos.Flor", b =>
                 {
                     b.Property<int>("Id")
@@ -338,6 +385,9 @@ namespace WebProyecto.Data.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
 
+                    b.Property<int>("EspecieId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -352,6 +402,8 @@ namespace WebProyecto.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoriaFlorId");
+
+                    b.HasIndex("EspecieId");
 
                     b.ToTable("Flores");
                 });
@@ -439,6 +491,101 @@ namespace WebProyecto.Data.Migrations
                     b.HasKey("id");
 
                     b.ToTable("Marcas");
+                });
+
+            modelBuilder.Entity("WebProyecto.Modelos.Orden", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Carrier")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Ciudad")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Direccion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EstadoOrden")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EstadoPago")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaEnvio")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaMaximoPago")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaOrden")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaPago")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("NombreCliente")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NumeroEnvio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Pais")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefono")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("TotalOrden")
+                        .HasColumnType("float");
+
+                    b.Property<string>("TransaccionId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UsuarioAplicacionId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UsuarioAplicacionId");
+
+                    b.ToTable("Orden");
+                });
+
+            modelBuilder.Entity("WebProyecto.Modelos.OrdenDetalle", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FlorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrdenId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PerfumeId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Precio")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FlorId");
+
+                    b.HasIndex("OrdenId");
+
+                    b.HasIndex("PerfumeId");
+
+                    b.ToTable("OrdenDetalle");
                 });
 
             modelBuilder.Entity("WebProyecto.Modelos.Perfume", b =>
@@ -593,6 +740,33 @@ namespace WebProyecto.Data.Migrations
                     b.Navigation("Perfume");
                 });
 
+            modelBuilder.Entity("WebProyecto.Modelos.CarroCompras", b =>
+                {
+                    b.HasOne("WebProyecto.Modelos.Flor", "Flor")
+                        .WithMany()
+                        .HasForeignKey("FlorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebProyecto.Modelos.Perfume", "Perfume")
+                        .WithMany()
+                        .HasForeignKey("PerfumeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebProyecto.Modelos.UsuarioAplicacion", "UsuarioAplicacion")
+                        .WithMany()
+                        .HasForeignKey("UsuarioAplicacionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Flor");
+
+                    b.Navigation("Perfume");
+
+                    b.Navigation("UsuarioAplicacion");
+                });
+
             modelBuilder.Entity("WebProyecto.Modelos.Flor", b =>
                 {
                     b.HasOne("WebProyecto.Modelos.CategoriaFlor", "CategoriaFlor")
@@ -601,7 +775,15 @@ namespace WebProyecto.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("WebProyecto.Modelos.Especie", "Especie")
+                        .WithMany()
+                        .HasForeignKey("EspecieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("CategoriaFlor");
+
+                    b.Navigation("Especie");
                 });
 
             modelBuilder.Entity("WebProyecto.Modelos.Inventario", b =>
@@ -646,6 +828,42 @@ namespace WebProyecto.Data.Migrations
                     b.Navigation("Flor");
 
                     b.Navigation("Inventario");
+
+                    b.Navigation("Perfume");
+                });
+
+            modelBuilder.Entity("WebProyecto.Modelos.Orden", b =>
+                {
+                    b.HasOne("WebProyecto.Modelos.UsuarioAplicacion", "UsuarioAplicacion")
+                        .WithMany()
+                        .HasForeignKey("UsuarioAplicacionId");
+
+                    b.Navigation("UsuarioAplicacion");
+                });
+
+            modelBuilder.Entity("WebProyecto.Modelos.OrdenDetalle", b =>
+                {
+                    b.HasOne("WebProyecto.Modelos.Flor", "Flor")
+                        .WithMany()
+                        .HasForeignKey("FlorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebProyecto.Modelos.Orden", "Orden")
+                        .WithMany()
+                        .HasForeignKey("OrdenId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WebProyecto.Modelos.Perfume", "Perfume")
+                        .WithMany()
+                        .HasForeignKey("PerfumeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Flor");
+
+                    b.Navigation("Orden");
 
                     b.Navigation("Perfume");
                 });

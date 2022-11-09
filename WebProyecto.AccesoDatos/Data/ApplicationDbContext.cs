@@ -22,6 +22,8 @@ namespace WebProyecto.Data
 
         public DbSet<Marca> Marcas { get; set; }
 
+        public DbSet<Especie> Especies { get; set; }
+
         public DbSet<Flor> Flores { get; set; }
 
         public DbSet<Perfume> Perfumes { get; set; }
@@ -34,9 +36,14 @@ namespace WebProyecto.Data
 
         public DbSet<InventarioDetalle> InventarioDetalle { get; set; }
 
-        //public DbSet<CarroCompras> CarroCompras { get; set; }
+        public DbSet<CarroCompras> CarroCompras { get; set; }
 
-        //public DbSet<Orden> Orden { get; set; }
+        public DbSet<Orden> Orden { get; set; }
+
+        public DbSet<OrdenDetalle> OrdenDetalle { get; set; }
+
+
+
 
 
 
